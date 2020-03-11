@@ -20,29 +20,22 @@ namespace prjWinCsFullCalculator
         int mov;
         int movX;
         int movY;
-
-
+        
+        
 
         public Form1()
         {
             InitializeComponent();
-            MessageBox.Show(System.Globalization.RegionInfo.CurrentRegion.ToString());
-            if (System.Globalization.RegionInfo.CurrentRegion.ToString() == "CA")
-            {
-                decPoint = ",";
-                btnDot.Text = ",";
-            }
-            else
-            {
-                decPoint = ".";
-                btnDot.Text = ".";
-            }
+            
+            
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //THIS WILL MAKE FORM LOAD ON CURRENT WORKING MONITOR
             this.Location = Screen.AllScreens[0].WorkingArea.Location;
+            btnDot.Text = decPoint = System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
         }
 
 
