@@ -36,6 +36,7 @@ namespace prjWinCsFullCalculator
             {
                 decPoint = ".";
                 btnDot.Text = ".";
+
             }
         }
 
