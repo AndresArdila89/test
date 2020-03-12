@@ -12,7 +12,7 @@ namespace prjWinCsFullCalculator
 {
     public partial class Form1 : Form
     {
-        string mainStr,currentOperation,currentSign="", oppHistory;
+        string mainStr="",currentOperation,currentSign="", oppHistory="";
         Int32 counterOfDot;
         Single leftNbr=0,rightNbr=0;
         string decPoint;
@@ -25,14 +25,15 @@ namespace prjWinCsFullCalculator
 
         public Form1()
         {
-            InitializeComponent();    
+            InitializeComponent();
+            MessageBox.Show(btnSq.Tag.ToString());
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //THIS WILL MAKE FORM LOAD ON CURRENT WORKING MONITOR
             this.Location = Screen.AllScreens[0].WorkingArea.Location;
-            btnDot.Text = decPoint = System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
+            btnDot.Tag = btnDot.Text = decPoint = System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
         }
 
 
@@ -77,14 +78,9 @@ namespace prjWinCsFullCalculator
             }
         }
 
-        private void mathOperations(Int16 xerror, Button anyButton)
+        private void mathOperations(Int16 xerror, string anyButton)
         {
 
-            if (anyButton.Text == "sqrt")
-            {
-
-                currentSign = anyButton.Text;
-            }
 
             switch (currentSign)
             {
@@ -94,92 +90,117 @@ namespace prjWinCsFullCalculator
                 case "-":
                     rightNbr = rightNbr - leftNbr;
                     break;
-                case "X":
+                case "x":
                     rightNbr = rightNbr * leftNbr;
                     break;
                 case "/":
-                    if (leftNbr != 0) 
-                    { 
-                        rightNbr = rightNbr / leftNbr; 
-                    }
-                    else 
-                    { 
-                        xerror = 1; 
-                    }
-                    break;
-                case "sqrt":
-                    if(leftNbr >= 0)
-                    { 
-                        rightNbr = Convert.ToSingle(Math.Sqrt(leftNbr));
-                       // MessageBox.Show("sqrt case");
+                    if (leftNbr != 0)
+                    {
+                        rightNbr = rightNbr / leftNbr;
                     }
                     else
                     {
-                        xerror = 0;
+                        xerror = 1;
                     }
-                    
                     break;
                 default:
                     rightNbr = leftNbr;
                     break;
             }
+
+
+        }
+
+//-------------------------------------------goooooooooooooooddddd-----------------------------------------------
+     
+        private void arithmeticBtn(String sign)
+        {
+            Int16 xerror = 0;
+            counterOfDot = 0;
+            string temp = mainStr;
+
+         
+            BasicOperators(xerror, sign);
+   
+            currentSign = sign;
+
+            currentOperation = currentOperation + temp + currentSign;
+            lblCurrentOpr.Text = currentOperation;
+
+
         }
 
 
-     
-        private void arithmeticBtn(Button anyButton)
-        {
-            Int16 xerror = 0;
-            string temp = mainStr;
-            counterOfDot = 0;
-            
-            
 
-            if (mainStr != "") {
-                
+        private void BasicOperators(Int16 xerror, string sign)
+        {
+
+
+            if (mainStr != "")
+            {
                 storeNumber();
-                mathOperations(xerror,anyButton);
-                
+                mathOperations(xerror, sign);
+
                 lblScreen.Text = (xerror == 0) ? rightNbr.ToString() : "ERROR";
 
             }
             else
             {
-                Int32 strLng = currentOperation.Length;
-                // MessageBox.Show(currentOperation);
-                if(currentOperation.Length != 0) { 
-                currentOperation = currentOperation.Substring(0, strLng - 1);
-                currentOperation.Trim();
-                }
-                else
+                if(currentOperation != "")
                 {
-                    currentOperation = currentOperation + rightNbr; 
+                    if (currentOperation.Length != 0)
+                    {
+                        currentOperation = currentOperation.Substring(0, currentOperation.Length - 1);
+                    }
+                    else
+                    {
+                        currentOperation = currentOperation + rightNbr;
+                    }
                 }
+                
             }
 
-
-            currentSign = anyButton.Text;
-
-            currentOperation = currentOperation +  temp +  currentSign;
-            lblCurrentOpr.Text = currentOperation;
-
-            if (currentSign == "=")
-            {
-                oppHistory = oppHistory + "\n" + currentOperation + rightNbr.ToString();
-                lblHistory.Text = oppHistory;
-                currentOperation = "";         
-            }
 
 
         }
 
 
 
+     
 
 
 
 
 
+        private void btnSq_Click(object sender, EventArgs e)
+        {
+            string sign = (sender as Button).Tag.ToString();
+
+            storeNumber();
+            if(sign == "√")
+            {
+                leftNbr = Convert.ToSingle(Math.Sqrt(leftNbr));
+            }
+            else
+            {
+                leftNbr = leftNbr * leftNbr;
+            }
+            
+
+            lblScreen.Text = leftNbr.ToString();
+            
+        }
+
+        private void btnEqual_Click(object sender, EventArgs e)
+        {
+            mathOperations(0, (sender as Button).Tag.ToString());
+            MessageBox.Show(rightNbr.ToString());
+            lblScreen.Text = rightNbr.ToString();
+
+            oppHistory = oppHistory + "\n" + currentOperation + rightNbr.ToString();
+            lblHistory.Text = oppHistory;
+            currentOperation = "";
+        }
 
 
 
@@ -194,24 +215,31 @@ namespace prjWinCsFullCalculator
         //------------------------ number BUTTONS---------------------------
         private void btnNumbers_Click(object sender, EventArgs e)
         {
-            concatenateString((sender as Button).Text);
+            concatenateString((sender as Button).Tag.ToString());
         }
 
         //------------------------ arithmetic BUTTONS-----------------------
 
-        private void btnOperation_Click(object sender, EventArgs e)
+        private void btnOperation_Click(object sender, EventArgs e )
         {
-            arithmeticBtn(sender as Button);
+            arithmeticBtn((sender as Button).Tag.ToString());
         }
 
         private void btnClr_Click(object sender, EventArgs e)
         {
-            mainStr = "";
-            leftNbr = 0;
-            lblScreen.Text = "0";
+            if(mainStr != "")
+            {
+                mainStr = mainStr.Substring(0, mainStr.Length - 1);
+                lblScreen.Text = mainStr;
+            }
+            else
+            {
+                lblCurrentOpr.Text = "";
+            }
+            
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void clrAll_Click(object sender, EventArgs e)
         {
             mainStr = "";
             currentOperation = "";
@@ -221,6 +249,19 @@ namespace prjWinCsFullCalculator
             lblScreen.Text = "0";
             lblCurrentOpr.Text = "";
         }
+
+        private void clrNumber_Click(object sender, EventArgs e)
+        {
+            mainStr = "";
+            leftNbr = 0;
+            lblScreen.Text = "0";
+        }
+
+       
+
+
+
+
 
 
 
