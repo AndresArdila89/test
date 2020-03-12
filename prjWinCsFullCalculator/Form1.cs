@@ -26,7 +26,7 @@ namespace prjWinCsFullCalculator
         public Form1()
         {
             InitializeComponent();
-            MessageBox.Show(btnSq.Tag.ToString());
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -78,7 +78,7 @@ namespace prjWinCsFullCalculator
             }
         }
 
-        private void mathOperations(Int16 xerror, string anyButton)
+        private void mathOperations(Int16 xerror)
         {
 
 
@@ -119,11 +119,11 @@ namespace prjWinCsFullCalculator
             counterOfDot = 0;
             string temp = mainStr;
 
-         
-            BasicOperators(xerror, sign);
+            
+            BasicOperators(xerror);
    
             currentSign = sign;
-
+            
             currentOperation = currentOperation + temp + currentSign;
             lblCurrentOpr.Text = currentOperation;
 
@@ -132,14 +132,14 @@ namespace prjWinCsFullCalculator
 
 
 
-        private void BasicOperators(Int16 xerror, string sign)
+        private void BasicOperators(Int16 xerror)
         {
 
 
             if (mainStr != "")
             {
                 storeNumber();
-                mathOperations(xerror, sign);
+                mathOperations(xerror);
 
                 lblScreen.Text = (xerror == 0) ? rightNbr.ToString() : "ERROR";
 
@@ -193,13 +193,20 @@ namespace prjWinCsFullCalculator
 
         private void btnEqual_Click(object sender, EventArgs e)
         {
-            mathOperations(0, (sender as Button).Tag.ToString());
-            MessageBox.Show(rightNbr.ToString());
-            lblScreen.Text = rightNbr.ToString();
+            
+            
+            storeNumber();
+            mathOperations(0);
+            
 
+
+            lblScreen.Text = rightNbr.ToString();
+            currentOperation = currentOperation + leftNbr + "=";
+            lblCurrentOpr.Text = currentOperation;
             oppHistory = oppHistory + "\n" + currentOperation + rightNbr.ToString();
             lblHistory.Text = oppHistory;
-            currentOperation = "";
+            currentOperation = rightNbr.ToString();
+            currentSign = "";
         }
 
 
