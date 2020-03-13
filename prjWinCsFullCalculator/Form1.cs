@@ -111,7 +111,7 @@ namespace prjWinCsFullCalculator
 
         }
 
-//-------------------------------------------goooooooooooooooddddd-----------------------------------------------
+
      
         private void arithmeticBtn(String sign)
         {
@@ -140,7 +140,7 @@ namespace prjWinCsFullCalculator
             {
                 storeNumber();
                 mathOperations(xerror);
-
+                MessageBox.Show("currentSign: " + currentSign + " rightNbr " + rightNbr + " leftNbr " + leftNbr);
                 lblScreen.Text = (xerror == 0) ? rightNbr.ToString() : "ERROR";
 
             }
@@ -175,19 +175,36 @@ namespace prjWinCsFullCalculator
         private void btnSq_Click(object sender, EventArgs e)
         {
             string sign = (sender as Button).Tag.ToString();
+            Single temp =0, temp2=0;
+            
+            
 
             storeNumber();
-            if(sign == "√")
+            temp2=temp = (currentSign == "") ? ((rightNbr == 0) ? leftNbr : rightNbr) : leftNbr;
+
+            MessageBox.Show("currentSign: " + currentSign + " rightNbr " + rightNbr + " leftNbr " + leftNbr + " temp " + temp);
+            if (sign == "√")
             {
-                leftNbr = Convert.ToSingle(Math.Sqrt(leftNbr));
+                temp = Convert.ToSingle(Math.Sqrt(temp));
             }
             else
             {
-                leftNbr = leftNbr * leftNbr;
+                temp = temp * temp;
             }
             
+            if (currentSign == "")
+            {
+                rightNbr = temp;
+            }
+            else
+            {
+                leftNbr = temp;
+            }
 
-            lblScreen.Text = leftNbr.ToString();
+            currentOperation = currentOperation + temp + " ";
+            lblCurrentOpr.Text = currentOperation;
+            lblScreen.Text = temp.ToString();
+            
             
         }
 
@@ -205,7 +222,7 @@ namespace prjWinCsFullCalculator
             lblCurrentOpr.Text = currentOperation;
             oppHistory = oppHistory + "\n" + currentOperation + rightNbr.ToString();
             lblHistory.Text = oppHistory;
-            currentOperation = rightNbr.ToString();
+            currentOperation = rightNbr.ToString()+" ";
             currentSign = "";
         }
 
